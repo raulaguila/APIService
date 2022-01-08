@@ -6,6 +6,7 @@ import logging.config
 import src.app
 
 from src.log.log import logger
+from uvicorn.config import LOGGING_CONFIG
 
 
 class AppServer:
@@ -18,6 +19,8 @@ class AppServer:
         self.reload = reload
 
         try:
+
+            LOGGING_CONFIG["formatters"]["access"]["fmt"] = '%(asctime)-23s | %(levelname)-8s | %(client_addr)-45s | "%(request_line)s" %(status_code)s'
 
             self.config = uvicorn.Config(app=src.app.app, host=self.host, port=self.port, reload=self.reload)
             self.server = uvicorn.Server(self.config)
