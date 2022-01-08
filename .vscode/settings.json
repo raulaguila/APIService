@@ -1,0 +1,22 @@
+{
+  "window.zoomLevel": 0,
+  "editor.fontSize": 11,
+  "editor.lineNumbers": "on",
+  "editor.lineHeight": 15,
+  "workbench.iconTheme": "material-icon-theme",
+  "python.terminal.activateEnvironment": true,
+  "python.pythonPath": "venv/Scripts/python",
+  "python.analysis.logLevel": "Information",
+  "python.linting.mypyEnabled": true,
+  "python.linting.flake8Enabled": true,
+  "python.testing.unittestEnabled": true,
+  "python.formatting.autopep8Args": [
+    "--max-line-length=400"
+  ],
+  "python.linting.flake8Args": [
+    "--max-line-length=400",
+  ],
+  "[python]": {
+    "editor.formatOnSave": true
+  }
+}
