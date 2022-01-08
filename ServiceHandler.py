@@ -56,8 +56,9 @@ class AppServer:
 
         try:
 
+            logging.info("Stopping API..")
             if self.proc.is_alive():
-                self.proc.join()
+                self.server.shutdown()
 
         except Exception as e:
 

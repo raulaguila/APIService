@@ -2,14 +2,29 @@ import logging
 import uvicorn
 import fastapi
 
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = fastapi.FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
-def root():
+async def root():
     logging.info("root request!!")
-    return {"Raul:": "Del Aguila"}
+    return {"message": "Hello World"}
+
+
+@app.get("/ping")
+async def pong():
+    return {"ping": "pong!"}
 
 
 if __name__ == "__main__":
