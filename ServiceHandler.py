@@ -6,33 +6,22 @@ import logging.config
 import src.app
 
 from src.log.log import logger
-from uvicorn.config import LOGGING_CONFIG
 
 
 class AppServer:
 
-    def __init__(self, host: str = "127.0.0.1", port: int = 8004, reload: bool = True) -> None:
+    def __init__(self, host: str = "127.0.0.1", port: int = 8004, reload: bool = False) -> None:
 
-        logging.info("Is being called..")  # It's not coming in here
+        logging.info("Is being called..")
         self.host = host
         self.port = port
         self.reload = reload
 
         try:
 
-            # %(name)s : uvicorn, uvicorn.error, ... . Not insightful at all.
-            # LOGGING_CONFIG["formatters"]["access"]["fmt"] = '%(asctime)s %(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
-            # LOGGING_CONFIG["formatters"]["default"]["fmt"] = "%(asctime)s %(levelprefix)s %(message)s"
-
-            # date_fmt = "%Y-%m-%d %H:%M:%S"
-            # LOGGING_CONFIG["formatters"]["default"]["datefmt"] = date_fmt
-            # LOGGING_CONFIG["formatters"]["access"]["datefmt"] = date_fmt
-            ##
-
             self.config = uvicorn.Config(app=src.app.app, host=self.host, port=self.port, reload=self.reload)
             self.server = uvicorn.Server(self.config)
             self.server.install_signal_handlers = lambda: None  # Need this line, or the server wont start
-            self.is_running = False
 
             logging.info("AppServer.server created: " + str(self.server is not None))
 
@@ -50,13 +39,11 @@ class AppServer:
         except Exception as e:
 
             logging.error("AppServer.run error: " + e.__str__())
-            self.is_running = False
 
     def start(self):
 
         try:
 
-            self.is_running = True
             self.proc = threading.Thread(target=self.run, args=())
             self.proc.setDaemon(True)
             self.proc.start()
@@ -69,7 +56,6 @@ class AppServer:
 
         try:
 
-            self.is_running = False
             if self.proc.is_alive():
                 self.proc.join()
 
@@ -84,8 +70,6 @@ class Handler:
 
         self.stopEvent = threading.Event()
         self.stopRequestedEvent = threading.Event()
-        self.server = AppServer()
-        self.server.__init__()
 
     def configLog(self):
 
@@ -140,6 +124,7 @@ class Handler:
 
         try:
 
+            self.server = AppServer()
             self.server.start()
 
         except Exception as e:
