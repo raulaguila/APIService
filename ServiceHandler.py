@@ -11,7 +11,7 @@ from uvicorn.config import LOGGING_CONFIG
 
 class AppServer:
 
-    def __init__(self, host: str = "127.0.0.1", port: int = 8004, reload: bool = False) -> None:
+    def __init__(self, host: str = "0.0.0.0", port: int = 8004, reload: bool = False) -> None:
 
         logging.info("Is being called..")
         self.host = host

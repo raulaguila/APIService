@@ -13,10 +13,22 @@ files_include = [
     os.path.join(os.getcwd(), 'configs')
 ]
 
+modules_include: list = ["ServiceHandler", "cx_Logging"]
+
+for folder in os.listdir(os.path.join(os.getcwd(), 'src')):
+    if folder != '__pycache__' and os.path.isdir(os.path.join(os.path.join(os.getcwd(), 'src'), folder)):
+        modules_include.append(f'src.{folder}')
+        for module in os.listdir(os.path.join(os.path.join(os.getcwd(), 'src'), folder)):
+            if module != '__pycache__' and '.py' in module:
+                modules_include.append(f'src.{folder}.{module[:-3]}')
+
+    if folder != '__pycache__' and '.py' in folder:
+        modules_include.append(f'src.{folder[:-3]}')
+
 options = {
     "build_exe": {
         "packages": packages_include,
-        "includes": ["ServiceHandler", "cx_Logging"],
+        "includes": modules_include,
         "excludes": ["tkinter"],
         "include_files": files_include
     }
