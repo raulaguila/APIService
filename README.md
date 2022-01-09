@@ -19,6 +19,7 @@ In a virtual environment, install by issuing the commands:
 pip install --upgrade cx_Freeze cx_Logging
 pip install --upgrade fastapi
 pip install --upgrade uvicorn
+pip install --upgrade configparser
 ```
 
 cx_Logging 3.0 has support for Python 3.6 up to 3.9.
