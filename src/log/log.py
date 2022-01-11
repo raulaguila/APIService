@@ -3,6 +3,7 @@ import sys
 import configparser
 import logging
 import logging.config
+import cx_Logging
 
 # Check versions
 import uvicorn
@@ -10,11 +11,25 @@ import fastapi
 
 
 class logger():
-    def __init__(self) -> None:
+    def __init__(self, cwd: bool = False) -> None:
 
-        self.log_config_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "configs"), "logging.conf")
-        self.log_output_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "logs"), "logger.log")
-        self.std_out_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "logs"), "console.log")
+        try:
+
+            if cwd:
+
+                self.log_config_file = os.path.join(os.path.join(os.getcwd(), "configs"), "logging.conf")
+                self.log_output_file = os.path.join(os.path.join(os.getcwd(), "logs"), "logger.log")
+                self.std_out_file = os.path.join(os.path.join(os.getcwd(), "logs"), "console.log")
+
+            else:
+
+                self.log_config_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "configs"), "logging.conf")
+                self.log_output_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "logs"), "logger.log")
+                self.std_out_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "logs"), "console.log")
+
+        except Exception as e:
+
+            cx_Logging.Error("logger.init, error: " + e.__str__())
 
     def log_create_file(self, clear_log: bool = True) -> bool:
 
