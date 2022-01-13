@@ -1,5 +1,7 @@
 # Service
 
+Sample of API rest as a windows service in python with cx_Freeze.
+
 # Installation and requirements:
 
 In a virtual environment, install the packages by issuing the command:
@@ -25,6 +27,8 @@ To install: (need admin priviliges)
 ```
 build\exe.win-amd64-3.8\APIWindowsService --install APIService
 ```
+
+To access the API, access in your browse this address: http://127.0.0.1:5050/docs
 
 To uninstall: (need admin priviliges)
 

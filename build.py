@@ -18,6 +18,7 @@ modules_exclude: list = ["tkinter"]
 
 modules_include: list = ["ServiceHandler"]
 
+# Get all your modules in src folder
 for folder in os.listdir(os.path.join(os.getcwd(), 'src')):
     if folder != '__pycache__' and os.path.isdir(os.path.join(os.path.join(os.getcwd(), 'src'), folder)):
         modules_include.append(f'src.{folder}')
