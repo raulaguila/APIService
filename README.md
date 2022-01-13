@@ -1,6 +1,7 @@
-# Service
+# API Rest as a windows service
 
 Sample of API rest as a windows service in python with cx_Freeze.
+In this development, i used python v3.8.5
 
 # Installation and requirements:
 

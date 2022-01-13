@@ -9,6 +9,9 @@ import cx_Logging
 import uvicorn
 import fastapi
 
+folder_log = "logs"
+folder_cfg = "configs"
+
 
 class logger():
     def __init__(self, cwd: bool = False) -> None:
@@ -17,15 +20,17 @@ class logger():
 
             if cwd:
 
-                self.log_config_file = os.path.join(os.path.join(os.getcwd(), "configs"), "logging.conf")
-                self.log_output_file = os.path.join(os.path.join(os.getcwd(), "logs"), "logger.log")
-                self.std_out_file = os.path.join(os.path.join(os.getcwd(), "logs"), "console.log")
+                self.log_cfg_file = os.path.join(os.path.join(os.getcwd(), folder_cfg), "logging.conf")
+                self.log_out_file = os.path.join(os.path.join(os.getcwd(), folder_log), "stdout.log")
+                self.std_err_file = os.path.join(os.path.join(os.getcwd(), folder_log), "stderr.log")
+                self.std_out_file = os.path.join(os.path.join(os.getcwd(), folder_log), "console.log")
 
             else:
 
-                self.log_config_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "configs"), "logging.conf")
-                self.log_output_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "logs"), "logger.log")
-                self.std_out_file = os.path.join(os.path.join(os.path.dirname(sys.executable), "logs"), "console.log")
+                self.log_cfg_file = os.path.join(os.path.join(os.path.dirname(sys.executable), folder_cfg), "logging.conf")
+                self.log_out_file = os.path.join(os.path.join(os.path.dirname(sys.executable), folder_log), "stdout.log")
+                self.std_err_file = os.path.join(os.path.join(os.path.dirname(sys.executable), folder_log), "stderr.log")
+                self.std_out_file = os.path.join(os.path.join(os.path.dirname(sys.executable), folder_log), "console.log")
 
         except Exception as e:
 
@@ -35,25 +40,30 @@ class logger():
 
         try:
 
-            os.makedirs(os.path.dirname(self.log_output_file), 0o666, True)
+            os.makedirs(os.path.dirname(self.log_out_file), 0o666, True)
             os.makedirs(os.path.dirname(self.std_out_file), 0o666, True)
+            os.makedirs(os.path.dirname(self.std_err_file), 0o666, True)
 
             if clear_log:
 
-                with open(self.log_output_file, 'w'):
+                with open(self.log_out_file, 'w'):
                     pass
 
                 with open(self.std_out_file, 'w'):
                     pass
 
-            sys.stdout = open(self.std_out_file, 'w')
+                with open(self.std_err_file, 'w'):
+                    pass
 
-            aux = self.log_output_file.replace('\\', '\\\\') if sys.platform == "win32" else self.log_output_file
+            sys.stdout = open(self.std_out_file, 'w')
+            sys.stderr = open(self.std_err_file, 'w')
+
+            aux = self.log_out_file.replace('\\', '\\\\') if sys.platform == "win32" else self.log_out_file
             config = configparser.ConfigParser()
-            config.read_file(open(self.log_config_file))
+            config.read_file(open(self.log_cfg_file))
             config.set("handler_fileHandler", "args", f'("{aux}", "a")')
 
-            with open(self.log_config_file, 'w') as f:
+            with open(self.log_cfg_file, 'w') as f:
                 config.write(f)
 
             return self._start_logger()
@@ -65,7 +75,7 @@ class logger():
 
     def _start_logger(self) -> bool:
 
-        logging.config.fileConfig(self.log_config_file)
+        logging.config.fileConfig(self.log_cfg_file)
         logging.info("Starting system..")
         logging.info(' _________________________________________')
         logging.info(f'| {"package" : <18} | {"version" : >18} |')
