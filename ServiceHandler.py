@@ -2,8 +2,6 @@ import uvicorn
 import threading
 import cx_Logging
 import logging
-import logging.config
-import src.app
 
 from src.log.log import logger
 from uvicorn.config import LOGGING_CONFIG
@@ -11,9 +9,8 @@ from uvicorn.config import LOGGING_CONFIG
 
 class AppServer:
 
-    def __init__(self, host: str = "0.0.0.0", port: int = 8004, reload: bool = False) -> None:
+    def __init__(self, host: str = "0.0.0.0", port: int = 5050, reload: bool = False) -> None:
 
-        logging.info("Is being called..")
         self.host = host
         self.port = port
         self.reload = reload
@@ -22,15 +19,18 @@ class AppServer:
 
             LOGGING_CONFIG["formatters"]["access"]["fmt"] = '%(asctime)-23s | %(levelname)-8s | %(client_addr)-45s | "%(request_line)s" %(status_code)s'
 
-            self.config = uvicorn.Config(app=src.app.app, host=self.host, port=self.port, reload=self.reload)
+            self.config = uvicorn.Config(app="src.app:app", host=self.host, port=self.port, reload=self.reload)
             self.server = uvicorn.Server(self.config)
             self.server.install_signal_handlers = lambda: None  # Need this line, or the server wont start
 
-            logging.info("AppServer.server created: " + str(self.server is not None))
+            if self.server is not None:
+
+                logging.info(f"AppServer.server created at 127.0.0.1:{self.port}")
+                logging.info(f"AppServer.server documentation at 127.0.0.1:{self.port}/docs")
 
         except Exception as e:
 
-            logging.error("AppServer.init error: " + e.__str__())
+            logging.error(f"AppServer.server error[{e.__traceback__.tb_lineno}]: {e.__str__()}")
 
     def run(self):
 
@@ -41,7 +41,7 @@ class AppServer:
 
         except Exception as e:
 
-            logging.error("AppServer.run error: " + e.__str__())
+            logging.error(f"AppServer.run error[{e.__traceback__.tb_lineno}]: {e.__str__()}")
 
     def start(self):
 
@@ -53,7 +53,7 @@ class AppServer:
 
         except Exception as e:
 
-            logging.error("AppServer.stop error: " + e.__str__())
+            logging.error(f"AppServer.start error[{e.__traceback__.tb_lineno}]: {e.__str__()}")
 
     def stop(self):
 
@@ -65,7 +65,7 @@ class AppServer:
 
         except Exception as e:
 
-            logging.error("AppServer.stop error: " + e.__str__())
+            logging.error(f"AppServer.stop error[{e.__traceback__.tb_lineno}]: {e.__str__()}")
 
 
 class Handler:
@@ -74,6 +74,12 @@ class Handler:
 
         self.stopEvent = threading.Event()
         self.stopRequestedEvent = threading.Event()
+
+    def session_changed(self, sessionId, eventTypeId):
+
+        self.server.stop()
+
+        self.server.start()
 
     def configLog(self):
 
@@ -85,7 +91,7 @@ class Handler:
 
         else:
 
-            cx_Logging.Erro("Logging configured successfully")
+            cx_Logging.Erro("Logging can\'t be configured successfully")
 
     # called when the service is starting
     def initialize(self, configFileName):
@@ -104,7 +110,7 @@ class Handler:
 
         except Exception as e:
 
-            logging.error("Handler.run error: " + e.__str__())
+            logging.error(f"Handler.run error[{e.__traceback__.tb_lineno}]: {e.__str__()}")
 
     def Run(self):
         pass
@@ -121,7 +127,7 @@ class Handler:
 
         except Exception as e:
 
-            logging.error("Handler.stop error: " + e.__str__())
+            logging.error(f"Handler.stop error[{e.__traceback__.tb_lineno}]: {e.__str__()}")
 
     # called in run
     def main(self):
@@ -133,4 +139,4 @@ class Handler:
 
         except Exception as e:
 
-            logging.error("Handler.main error: " + e.__str__())
+            logging.error(f"Handler.main error[{e.__traceback__.tb_lineno}]: {e.__str__()}")

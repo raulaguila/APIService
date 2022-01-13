@@ -1,4 +1,5 @@
 import os
+
 from cx_Freeze import setup, Executable
 
 packages_include = [
@@ -6,14 +7,16 @@ packages_include = [
     "logging.config",
     "uvicorn",
     "fastapi",
-    "logging"
+    "websockets"
 ]
 
 files_include = [
     os.path.join(os.getcwd(), 'configs')
 ]
 
-modules_include: list = ["ServiceHandler", "cx_Logging"]
+modules_exclude: list = ["tkinter"]
+
+modules_include: list = ["ServiceHandler"]
 
 for folder in os.listdir(os.path.join(os.getcwd(), 'src')):
     if folder != '__pycache__' and os.path.isdir(os.path.join(os.path.join(os.getcwd(), 'src'), folder)):
@@ -25,23 +28,21 @@ for folder in os.listdir(os.path.join(os.getcwd(), 'src')):
     if folder != '__pycache__' and '.py' in folder:
         modules_include.append(f'src.{folder[:-3]}')
 
-options = {
-    "build_exe": {
-        "packages": packages_include,
-        "includes": modules_include,
-        "excludes": ["tkinter"],
-        "include_files": files_include
-    }
-}
-
 setup(
     name="API - Windows Service",
     version="0.0.1",
-    description="Sample cx_Freeze Windows serice",
+    description="Sample of API rest as a windows service in python with cx_Freeze",
     executables=[Executable(
         "Config.py",
         base="Win32Service",
         target_name="APIWindowsService",
     )],
-    options=options,
+    options={
+        "build_exe": {
+            "packages": packages_include,
+            "includes": modules_include,
+            "excludes": modules_exclude,
+            "include_files": files_include
+        }
+    },
 )

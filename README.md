@@ -5,7 +5,7 @@
 In a virtual environment, install the packages by issuing the command:
 
 ```
-pip install -r requirements.txt
+pip install --upgrade -r requirements.txt
 ```
 
 cx_Logging 3.0 has support for Python 3.6 up to 3.9.
